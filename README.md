@@ -11,14 +11,14 @@ Requirements
 
 Run Instruction
 ===============
-1) place in the same folder folowing files:
+- place in the same folder folowing files:
 	- LeapForSTK.py
 	- Leap.py
 	- LeapPython.so
 	- libLeap.dylib
-2) run SuperTuxKarts
-3) Change your keyboard settings to WSAD configuration for steering the kart
-4) run python LeapForSTK.py from command line (in proper directory)
+- run SuperTuxKarts
+- Change your keyboard settings to WSAD configuration for steering the kart
+- run python LeapForSTK.py from command line (in proper directory)
 
 
 
