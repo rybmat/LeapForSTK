@@ -3,6 +3,11 @@ LeapForSTK
 
 Simple Leap Motion Adapter for SuperTuxKarts written in Python.
 
+Requirements
+============
+- Python 2.7(.6)
+- Leap MotionSDK
+- PyUserInput https://github.com/SavinaRoja/PyUserInput
 
 Run Instruction
 ===============
