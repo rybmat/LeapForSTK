@@ -1,4 +1,4 @@
 LeapForSTK
 ==========
 
-Simple Leap Motion Adapter for SuperTuxCarts written in Python.
+Simple Leap Motion Adapter for SuperTuxKarts written in Python.
