@@ -28,8 +28,6 @@ class LeapListener(Leap.Listener):
             self.__key_pressed_flags[key] = False
 
     def on_init(self, controller):
-        self.__left_hand_id = -100
-        self.__right_hand_id = -99
         self.__frame_count = 0
 
         self.__key_pressed_flags = {
