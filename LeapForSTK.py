@@ -16,7 +16,7 @@ keys = {'forward':'w',
         'fire':' ',
         }
 
-class SampleListener(Leap.Listener):
+class LeapListener(Leap.Listener):
     def __press_key(self, key):
         if not self.__key_pressed_flags[key]:
             self.keyboard.press_key(keys[key])
@@ -28,8 +28,8 @@ class SampleListener(Leap.Listener):
             self.__key_pressed_flags[key] = False
 
     def on_init(self, controller):
-        self.__left_hand_id = 0
-        self.__right_hand_id = 0
+        self.__left_hand_id = -100
+        self.__right_hand_id = -99
         self.__frame_count = 0
 
         self.__key_pressed_flags = {
@@ -63,20 +63,14 @@ class SampleListener(Leap.Listener):
 
 
     def on_frame(self, controller):
-        f = controller.frame()
-        left_hand = f.hand(self.__left_hand_id)
-        right_hand = f.hand(self.__right_hand_id)
+        f = controller.frame()       
+
+        left_hand = f.hands.leftmost
+        right_hand = f.hands.rightmost
+
         
-
-        if (not left_hand.is_valid ) or (right_hand.is_valid ):
-            left_hand = f.hands.leftmost
-            right_hand = f.hands.rightmost
-
-            self.__left_hand_id = left_hand.id
-            self.__right_hand_id = right_hand.id
-
-            print "new hands identified", self.__left_hand_id, self.__right_hand_id
-
+        print "\nhands id: ", left_hand.id, right_hand.id
+        
         left_handPos = left_hand.palm_position
         right_handPos = right_hand.palm_position
         avgZ = (left_handPos[2] + right_handPos[2]) / 2
@@ -110,21 +104,22 @@ class SampleListener(Leap.Listener):
 
 
 ### turning and drifting
-        if left_handPos[1] - right_handPos[1] > TURN_TRESHOLD:
+        handsY_diff = left_handPos[1] - right_handPos[1]
+        if handsY_diff > TURN_TRESHOLD:
             print "skret w prawo"
             self.__press_key('right')
         else:
             self.__release_key('right')
 
 
-        if right_handPos[1] - left_handPos[1] > TURN_TRESHOLD:
+        if handsY_diff < -TURN_TRESHOLD:
             print "skret w lewo"
             self.__press_key('left')
         else:
             self.__release_key('left')
 
 
-        if abs(right_handPos[1] - left_handPos[1]) > DRIFT_TRESHOLD:
+        if abs(handsY_diff) > DRIFT_TRESHOLD:
             print "drift"
             self.__press_key('drift')
         else:
@@ -156,7 +151,7 @@ class SampleListener(Leap.Listener):
 
 
 def main():
-    listener = SampleListener()
+    listener = LeapListener()
     controller = Leap.Controller()
 
     controller.set_policy_flags(Leap.Controller.POLICY_BACKGROUND_FRAMES)
