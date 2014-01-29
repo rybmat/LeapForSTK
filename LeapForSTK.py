@@ -5,7 +5,7 @@ import Leap, sys
 
 
 TURN_TRESHOLD = 50
-DRIFT_TRESHOLD = 150
+DRIFT_TRESHOLD = 250
 
 keys = {'forward':'w', 
         'left':'a', 
@@ -28,7 +28,7 @@ class LeapListener(Leap.Listener):
             self.__key_pressed_flags[key] = False
 
     def on_init(self, controller):
-        self.__frame_count = 0
+        self.__frame_counter = 0
 
         self.__key_pressed_flags = {
             'forward':False, 
@@ -61,7 +61,12 @@ class LeapListener(Leap.Listener):
 
 
     def on_frame(self, controller):
-        f = controller.frame()       
+        f = controller.frame()     
+        
+        if self.__frame_counter >= 999999:
+            self.__frame_counter = 0
+        else:
+            self.__frame_counter += 1
 
         left_hand = f.hands.leftmost
         right_hand = f.hands.rightmost
@@ -102,17 +107,31 @@ class LeapListener(Leap.Listener):
 
 
 ### turning and drifting
-        handsY_diff = left_handPos[1] - right_handPos[1]
+        handsY_diff = left_handPos[1] - right_handPos[1]              #2   2000
+        release_condition = self.__frame_counter > (abs(handsY_diff)**2) / 3000
+
+        print handsY_diff
+
         if handsY_diff > TURN_TRESHOLD:
-            print "skret w prawo"
-            self.__press_key('right')
+            if release_condition:
+                print "skret w prawo zwolnienie klawisza"
+                self.__release_key('right')
+                self.__frame_counter = 0
+            else:
+                print "skret w prawo"
+                self.__press_key('right')
         else:
             self.__release_key('right')
 
 
         if handsY_diff < -TURN_TRESHOLD:
-            print "skret w lewo"
-            self.__press_key('left')
+            if release_condition:
+                print "skret w lewo zwolnienie klawisza"
+                self.__release_key('left')
+                self.__frame_counter = 0
+            else:
+                print "skret w lewo"
+                self.__press_key('left')
         else:
             self.__release_key('left')
 
